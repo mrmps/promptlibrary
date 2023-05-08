@@ -9,7 +9,7 @@ const xata = getXataClient();
 export default async function Home() {
   const {
     aggs: { totalCount },
-  } = await xata.db.games.aggregate({
+  } = await xata.db.prompts.aggregate({
     totalCount: {
       count: "*",
     },

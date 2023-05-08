@@ -8,24 +8,13 @@ import {
 
 const tables = [
   {
-    name: "games",
+    name: "prompts",
     columns: [
-      { name: "name", type: "string" },
-      { name: "alternativeNames", type: "multiple" },
-      { name: "console", type: "string" },
-      { name: "slug", type: "string" },
-      { name: "firstReleaseDate", type: "string" },
-      { name: "storyline", type: "text" },
-      { name: "summary", type: "text" },
-      { name: "totalRatingCount", type: "int" },
-      { name: "totalRating", type: "float" },
-      { name: "url", type: "string" },
-      { name: "igdbId", type: "int" },
-      { name: "cover", type: "string" },
-      { name: "screenshots", type: "multiple" },
-      { name: "franchise", type: "string" },
-      { name: "genres", type: "multiple" },
-      { name: "videos", type: "multiple" },
+      { name: "id", type: "string" },
+      { name: "prompt", type: "string" },
+      { name: "score", type: "int" },
+      { name: "category", type: "string" },
+      { name: "img_url", type: "string" },
     ],
   },
 ] as const;
@@ -33,18 +22,18 @@ const tables = [
 export type SchemaTables = typeof tables;
 export type InferredTypes = SchemaInference<SchemaTables>;
 
-export type Games = InferredTypes["games"];
-export type GamesRecord = Games & XataRecord;
+export type Prompts = InferredTypes["prompts"];
+export type PromptsRecord = Prompts & XataRecord;
 
 export type DatabaseSchema = {
-  games: GamesRecord;
+  prompts: PromptsRecord;
 };
 
 const DatabaseClient = buildClient();
 
 const defaultOptions = {
   databaseURL:
-    "https://Anjana-Sofia-Vakil-s-workspace-tq6lr1.eu-west-1.xata.sh/db/retrogames",
+    "https://Michael-R-s-workspace-oog6cs.us-west-2.xata.sh/db/prompts",
 };
 
 export class XataClient extends DatabaseClient<DatabaseSchema> {
@@ -61,3 +50,21 @@ export const getXataClient = () => {
   instance = new XataClient();
   return instance;
 };
+
+
+ // { name: "name", type: "string" },
+      // { name: "alternativeNames", type: "multiple" },
+      // { name: "console", type: "string" },
+      // { name: "slug", type: "string" },
+      // { name: "firstReleaseDate", type: "string" },
+      // { name: "storyline", type: "text" },
+      // { name: "summary", type: "text" },
+      // { name: "totalRatingCount", type: "int" },
+      // { name: "totalRating", type: "float" },
+      // { name: "url", type: "string" },
+      // { name: "igdbId", type: "int" },
+      // { name: "cover", type: "string" },
+      // { name: "screenshots", type: "multiple" },
+      // { name: "franchise", type: "string" },
+      // { name: "genres", type: "multiple" },
+      // { name: "videos", type: "multiple" },

@@ -1,12 +1,12 @@
 import styles from "../../page.module.css";
 import Link from "next/link";
 import { getXataClient } from "../../../util/xata";
-import { getConsoleName } from "../../../util/consoles";
+// import { getConsoleName } from "../../../util/categories";
 
 const xata = getXataClient();
 
-export default async function Page({ params }: { params: { gameID: string } }) {
-  const game = await xata.db.games.read(params.gameID);
+export default async function Page({ params }: { params: { id: string } }) {
+  const prompt = await xata.db.prompts.read(params.id);
 
   return (
     <div className={styles.container}>
@@ -22,36 +22,36 @@ export default async function Page({ params }: { params: { gameID: string } }) {
         >
           &lt;&lt; Back to Search
         </Link>
-        {!game ? (
+        {!prompt ? (
           <h1 className={styles.title}>
-            Oops! Game "{params.gameID}" not found
+            Oops! Game "{params.id}" not found
           </h1>
         ) : (
           <>
-            <h1 className={styles.title}>{game.name}</h1>
+            <h1 className={styles.title}>{prompt.prompt}</h1>
             <div
               className={styles.container}
               style={{ display: "block", marginTop: "1em" }}
             >
               <div style={{ display: "flex", gap: "1.2rem" }}>
-                {game.cover && (
+                {prompt.img_url && (
                   <p>
-                    <img src={game.cover.replace("t_thumb", "t_cover_big")} />
+                    <img src={prompt.img_url} />
                   </p>
                 )}
-                {game.summary && (
-                  <p style={{ fontSize: "1.2rem" }}>{game.summary}</p>
-                )}
+                {/* {prompt.summary && (
+                  <p style={{ fontSize: "1.2rem" }}>{prompt.summary}</p>
+                )} */}
               </div>
-              {game.firstReleaseDate && (
+              {/* {prompt.firstReleaseDate && (
                 <p>
-                  Released: {new Date(game.firstReleaseDate).toDateString()}
+                  Released: {new Date(prompt.firstReleaseDate).toDateString()}
                 </p>
-              )}
-              {game.console && <p>Console: {getConsoleName(game.console)}</p>}
-              {game.genres && <p>Genres: {game.genres.join(", ")}</p>}
-              {game.url && (
-                <a className={styles.link} href={game.url}>
+              )} */}
+              {/* {prompt.category && <p>Category: {getConsoleName(prompt.category)}</p>} */}
+              {/* {prompt.genres && <p>Category: {prompt.genres.join(", ")}</p>} */}
+              {prompt.img_url && (
+                <a className={styles.link} href={prompt.img_url}>
                   View on IGDB &gt;&gt;
                 </a>
               )}

@@ -5,48 +5,48 @@ import styles from "../app/page.module.css";
 import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import debounce from "lodash.debounce";
-import { CONSOLES, getConsoleName } from "../util/consoles";
-import type { Games } from "../util/xata";
+import { CATEGORIES } from "../util/categories";
+import type { Prompts } from "../util/xata";
 
-const searchGames = async (
+const searchPrompts = async (
   term: string,
-  consoles: boolean[],
-  callback: ({ games, elapsed }: { games: Games[]; elapsed: number }) => void
+  categories: boolean[],
+  callback: ({ prompts, elapsed }: { prompts: Prompts[]; elapsed: number }) => void
 ) => {
   let url = `/api/search?term=${term}`;
-  if (consoles && consoles.length)
-    url += CONSOLES.filter((c, i) => consoles[i])
-      .map((c) => `&console=${c.id}`)
+  if (categories && categories.length)
+    url += CATEGORIES.filter((c, i) => categories[i])
+      .map((c) => `&console=${c}`)
       .join("");
 
   const response = await fetch(url);
 
-  const { games, elapsed } = await response.json();
-  return callback({ games, elapsed });
+  const { prompts, elapsed } = await response.json();
+  return callback({ prompts, elapsed });
 };
 
-const debouncedSearch = debounce(searchGames, 500);
+const debouncedSearch = debounce(searchPrompts, 500);
 
 export default function Search() {
   const [searched, setSearched] = useState("");
-  const [games, setGames] = useState<Games[]>([]);
-  const [consoles, setConsoles] = useState(CONSOLES.map((c) => false));
+  const [prompts, setPrompts] = useState<Prompts[]>([]);
+  const [categories, setCategories] = useState(CATEGORIES.map((c) => false));
   const [isSearching, setIsSearching] = useState(false);
   const [searchMs, setSearchMs] = useState(0);
 
   useEffect(() => {
     if (searched) {
       setIsSearching(true);
-      debouncedSearch(searched, consoles, ({ games, elapsed }) => {
-        setGames(games);
+      debouncedSearch(searched, categories, ({ prompts, elapsed }) => {
+        setPrompts(prompts);
         setSearchMs(elapsed);
         setIsSearching(false);
       });
     }
-  }, [searched, consoles]);
+  }, [searched, categories]);
 
-  function toggleConsole(i: number) {
-    setConsoles(consoles.map((v, ci) => (ci === i ? !v : v)));
+  function toggleCategory(i: number) {
+    setCategories(categories.map((v, ci) => (ci === i ? !v : v)));
   }
 
   return (
@@ -65,25 +65,25 @@ export default function Search() {
         <div id="filters">
           <Checkboxes
             title="Console"
-            options={CONSOLES.map((c) => c.name)}
-            onChange={toggleConsole}
+            options={CATEGORIES.map((c) => c)}
+            onChange={toggleCategory}
           />
         </div>
 
         {isSearching ? (
           <p>Searching...</p>
-        ) : games && searchMs ? (
+        ) : prompts && searchMs ? (
           <p>
-            Found {games.length} games in {searchMs}ms
+            Found {prompts.length} prompts in {searchMs}ms
           </p>
         ) : null}
       </aside>
 
       <div style={{ width: "70%" }}>
-        {games.map(({ id, name, console, genres, cover }) => (
+        {prompts.map(({ id, prompt, category }) => (
           <Link
             key={id}
-            href={`/games/${id}`}
+            href={`/prompts/${id}`}
             className={styles.card}
             style={{ display: "block" }}
           >
@@ -95,15 +95,16 @@ export default function Search() {
               }}
             >
               <div>
-                <h2>{name}</h2>
-                <p>{console && getConsoleName(console)}</p>
+                <h2>{prompt}</h2>
+                {/* <p>{console && getConsoleName(console)}</p> */}
                 <p>
-                  {genres &&
-                    genres.length &&
-                    genres.map((g) => JSON.parse(g)).join(", ")}
+                  {category }
+                  {/* // &&
+                    // categories.length &&
+                    // categories.map((g) => JSON.parse(g)).join(", ")} */}
                 </p>
               </div>
-              <p>{cover && <img src={cover} />}</p>
+              {/* <p>{cover && <img src={cover} />}</p> */}
             </div>
           </Link>
         ))}
